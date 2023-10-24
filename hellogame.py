@@ -41,6 +41,12 @@ class Player:
     def draw(self):
         pygame.draw.rect(screen, RED, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
 
+    def shoot(self):
+        if self.direction == 0:  # Facing right
+            return Bullet(self.x + PLAYER_SIZE, self.y)
+        else:  # Facing left
+            return Bullet(self.x - BULLET_SIZE, self.y, -BULLET_SPEED)
+
 class Enemy:
     def __init__(self):
         self.y = PLAYER_Y
@@ -57,13 +63,14 @@ class Enemy:
         pygame.draw.rect(screen, GREEN, (self.x, self.y, ENEMY_SIZE, ENEMY_SIZE))
 
 class Bullet:
-    def __init__(self, x):
+    def __init__(self, x, y, speed=BULLET_SPEED):
         self.x = x
-        self.y = PLAYER_Y
+        self.y = y
+        self.speed = speed
         self.alive = True
 
     def move(self):
-        self.x += BULLET_SPEED
+        self.x += self.speed
 
     def draw(self):
         pygame.draw.rect(screen, BLUE, (self.x, self.y, BULLET_SIZE, BULLET_SIZE))
@@ -90,7 +97,7 @@ while running:
             elif event.key == pygame.K_RIGHT:
                 player.turn_right()
             elif event.key == pygame.K_z:
-                bullets.append(Bullet(player.x))
+                bullets.append(player.shoot())
     
     # Spawn enemies randomly
     if random.random() < 0.02:
@@ -113,10 +120,20 @@ while running:
     # Check for bullet-enemy collisions
     for bullet in bullets:
         for enemy in enemies:
-            if bullet.x < enemy.x + ENEMY_SIZE and bullet.x + BULLET_SIZE > enemy.x:
-                bullets.remove(bullet)
-                enemies.remove(enemy)
-                break
+            bullet_front = bullet.x + BULLET_SIZE if bullet.speed > 0 else bullet.x
+            bullet_previous_front = bullet_front - bullet.speed
+            
+            # Check if the bullet's front has passed through the enemy's x position
+            if bullet.speed > 0:  # Moving right
+                if bullet_previous_front <= enemy.x and bullet_front >= enemy.x:
+                    bullets.remove(bullet)
+                    enemies.remove(enemy)
+                    break
+            else:  # Moving left
+                if bullet_previous_front >= enemy.x + ENEMY_SIZE and bullet_front <= enemy.x + ENEMY_SIZE:
+                    bullets.remove(bullet)
+                    enemies.remove(enemy)
+                    break
 
     # Check for player-enemy collisions
     for enemy in enemies:
