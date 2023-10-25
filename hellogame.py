@@ -31,6 +31,10 @@ background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREE
 player_image = pygame.image.load("player.png")
 player_image = pygame.transform.scale(player_image, (PLAYER_SIZE, PLAYER_SIZE))
 
+enemy_image = pygame.image.load("enemy.png")
+enemy_image = pygame.transform.scale(enemy_image, (ENEMY_SIZE, ENEMY_SIZE))
+enemy_image_flipped = pygame.transform.flip(enemy_image, True, False)
+
 
 class Player:
     def __init__(self):
@@ -72,7 +76,11 @@ class Enemy:
             self.x -= ENEMY_SPEED
 
     def draw(self):
-        pygame.draw.rect(screen, GREEN, (self.x, self.y, ENEMY_SIZE, ENEMY_SIZE))
+        if self.direction == 0:  # Moving to the right
+            screen.blit(enemy_image_flipped, (self.x - ENEMY_SIZE // 2, self.y - ENEMY_SIZE // 2))
+        else:  # Moving to the left
+            screen.blit(enemy_image, (self.x - ENEMY_SIZE // 2, self.y - ENEMY_SIZE // 2))
+
 
 class Bullet:
     def __init__(self, x, y, speed=BULLET_SPEED):
