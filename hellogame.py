@@ -25,6 +25,9 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple 2D Game")
 
 
+background_image = pygame.image.load("background.png")
+background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
 
 class Player:
     def __init__(self):
@@ -87,6 +90,7 @@ clock = pygame.time.Clock()
 
 while running:
     screen.fill(WHITE)
+    screen.blit(background_image, (0, 0))
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
