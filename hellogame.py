@@ -28,21 +28,29 @@ pygame.display.set_caption("Simple 2D Game")
 background_image = pygame.image.load("background.png")
 background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+player_image = pygame.image.load("player.png")
+player_image = pygame.transform.scale(player_image, (PLAYER_SIZE, PLAYER_SIZE))
+
 
 class Player:
     def __init__(self):
         self.x = SCREEN_WIDTH // 2
         self.y = PLAYER_Y
-        self.direction = 0  # 0 for facing right, 1 for facing left
+        self.direction = 1  # 0 for facing right, 1 for facing left
     
     def turn_left(self):
         self.direction = 1
+        global player_image
+        player_image = pygame.transform.flip(player_image, True, False)
 
     def turn_right(self):
         self.direction = 0
+        global player_image
+        player_image = pygame.transform.flip(player_image, True, False)
 
     def draw(self):
-        pygame.draw.rect(screen, RED, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+        # pygame.draw.rect(screen, RED, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+        screen.blit(player_image, (self.x, self.y))
 
     def shoot(self):
         if self.direction == 0:  # Facing right
