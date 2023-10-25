@@ -7,8 +7,8 @@ pygame.init()
 # Define some constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-PLAYER_SIZE = 50
-ENEMY_SIZE = 50
+PLAYER_SIZE = 100
+ENEMY_SIZE = 100
 BULLET_SIZE = 10
 BULLET_SPEED = 10
 ENEMY_SPEED = 5
@@ -50,7 +50,8 @@ class Player:
 
     def draw(self):
         # pygame.draw.rect(screen, RED, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
-        screen.blit(player_image, (self.x, self.y))
+        # screen.blit(player_image, (self.x, self.y))
+        screen.blit(player_image, (self.x - PLAYER_SIZE // 2, self.y - PLAYER_SIZE // 2))
 
     def shoot(self):
         if self.direction == 0:  # Facing right
