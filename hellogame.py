@@ -9,7 +9,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 PLAYER_SIZE = 100
 ENEMY_SIZE = 100
-BULLET_SIZE = 10
+BULLET_SIZE = 30
 BULLET_SPEED = 10
 ENEMY_SPEED = 5
 PLAYER_Y = SCREEN_HEIGHT // 2
@@ -35,6 +35,11 @@ enemy_image = pygame.image.load("enemy.png")
 enemy_image = pygame.transform.scale(enemy_image, (ENEMY_SIZE, ENEMY_SIZE))
 enemy_image_flipped = pygame.transform.flip(enemy_image, True, False)
 
+bullet_image = pygame.image.load("bullet.png")
+bullet_image = pygame.transform.scale(bullet_image, (BULLET_SIZE, BULLET_SIZE))
+bullet_image_flipped = pygame.transform.flip(bullet_image, True, False)
+
+
 
 class Player:
     def __init__(self):
@@ -58,10 +63,9 @@ class Player:
         screen.blit(player_image, (self.x - PLAYER_SIZE // 2, self.y - PLAYER_SIZE // 2))
 
     def shoot(self):
-        if self.direction == 0:  # Facing right
-            return Bullet(self.x + PLAYER_SIZE, self.y)
-        else:  # Facing left
-            return Bullet(self.x - BULLET_SIZE, self.y, -BULLET_SPEED)
+        bullet_x = self.x + PLAYER_SIZE // 2 if self.direction == 0 else self.x - PLAYER_SIZE // 2 - BULLET_SIZE
+        bullet_y = self.y
+        return Bullet(bullet_x, bullet_y, BULLET_SPEED if self.direction == 0 else -BULLET_SPEED)
 
 class Enemy:
     def __init__(self):
@@ -93,9 +97,10 @@ class Bullet:
         self.x += self.speed
 
     def draw(self):
-        pygame.draw.rect(screen, BLUE, (self.x, self.y, BULLET_SIZE, BULLET_SIZE))
-
-
+        if self.speed > 0:  # Moving to the right
+            screen.blit(bullet_image_flipped, (self.x - BULLET_SIZE // 2, self.y - BULLET_SIZE // 2))
+        else:  # Moving to the left
+            screen.blit(bullet_image, (self.x - BULLET_SIZE // 2, self.y - BULLET_SIZE // 2))
 
 
 player = Player()
