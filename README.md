@@ -7,18 +7,12 @@ Shooting Game is a dynamic game developed using Python 3 and Pygame. Enjoy shoot
 - Python 3.x
 - Pygame
 
-Install Pygame using pip:
-
-```sh
-python -m pip install -r requirements.txt
-```
-
-
 ## Installation
 
 ```sh
 git clone https://github.com/theMistletoe/ShootingGameByChatGPT.git
 cd ShootingGameByChatGPT
+python -m pip install -r requirements.txt
 python hellogame.py
 ```
 
