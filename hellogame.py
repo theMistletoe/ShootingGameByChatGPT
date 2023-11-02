@@ -25,17 +25,17 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple 2D Game")
 
 
-background_image = pygame.image.load("background.png")
+background_image = pygame.image.load("images/background.png")
 background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-player_image = pygame.image.load("player.png")
+player_image = pygame.image.load("images/player.png")
 player_image = pygame.transform.scale(player_image, (PLAYER_SIZE, PLAYER_SIZE))
 
-enemy_image = pygame.image.load("enemy.png")
+enemy_image = pygame.image.load("images/enemy.png")
 enemy_image = pygame.transform.scale(enemy_image, (ENEMY_SIZE, ENEMY_SIZE))
 enemy_image_flipped = pygame.transform.flip(enemy_image, True, False)
 
-bullet_image = pygame.image.load("bullet.png")
+bullet_image = pygame.image.load("images/bullet.png")
 bullet_image = pygame.transform.scale(bullet_image, (BULLET_SIZE, BULLET_SIZE))
 bullet_image_flipped = pygame.transform.flip(bullet_image, True, False)
 
