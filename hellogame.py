@@ -11,7 +11,7 @@ PLAYER_SIZE = 100
 ENEMY_SIZE = 100
 BULLET_SIZE = 30
 BULLET_SPEED = 10
-ENEMY_SPEED = 5
+ENEMY_SPEED = 1
 PLAYER_Y = SCREEN_HEIGHT // 2
 
 # Colors
@@ -19,6 +19,9 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+
+GRAVITY = 0.5
+JUMP_SPEED = -10
 
 # Set up the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -46,7 +49,14 @@ class Player:
         self.x = SCREEN_WIDTH // 2
         self.y = PLAYER_Y
         self.direction = 1  # 0 for facing right, 1 for facing left
-    
+        self.dy = 0  # Change in y-position (vertical speed)
+        self.on_ground = True  # Is the player on the ground?
+
+    def jump(self):
+        if self.on_ground:  # Only jump if on the ground
+            self.dy = JUMP_SPEED
+            self.on_ground = False  # No longer on the ground
+
     def turn_left(self):
         self.direction = 1
         global player_image
@@ -60,6 +70,7 @@ class Player:
     def draw(self):
         # pygame.draw.rect(screen, RED, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
         # screen.blit(player_image, (self.x, self.y))
+        # screen.blit(player_image, (self.x - PLAYER_SIZE // 2, self.y - PLAYER_SIZE // 2))
         screen.blit(player_image, (self.x - PLAYER_SIZE // 2, self.y - PLAYER_SIZE // 2))
 
     def shoot(self):
@@ -67,17 +78,39 @@ class Player:
         bullet_y = self.y
         return Bullet(bullet_x, bullet_y, BULLET_SPEED if self.direction == 0 else -BULLET_SPEED)
 
+    def update(self):
+        self.y += self.dy
+        self.dy += GRAVITY
+        if self.y > PLAYER_Y:  # Check if player is on the ground level
+            self.y = PLAYER_Y
+            self.dy = 0
+            self.on_ground = True
+
 class Enemy:
     def __init__(self):
         self.y = PLAYER_Y
         self.x = 0 if random.choice([True, False]) else SCREEN_WIDTH
         self.direction = 0 if self.x == 0 else 1
+        self.dy = 0
+        self.on_ground = True
 
     def move(self):
         if self.direction == 0:
             self.x += ENEMY_SPEED
         else:
             self.x -= ENEMY_SPEED
+
+        # Vertical movement (jump logic)
+        if self.on_ground and random.random() < 0.1:  # 10% chance to jump
+            self.dy = JUMP_SPEED
+            self.on_ground = False
+
+        self.y += self.dy
+        self.dy += GRAVITY
+        if self.y > PLAYER_Y:  # Check if enemy is on ground level
+            self.y = PLAYER_Y
+            self.dy = 0
+            self.on_ground = True
 
     def draw(self):
         if self.direction == 0:  # Moving to the right
@@ -124,6 +157,8 @@ while running:
                 player.turn_right()
             elif event.key == pygame.K_z:
                 bullets.append(player.shoot())
+            elif event.key == pygame.K_UP:
+                player.jump()
     
     # Spawn enemies randomly
     if random.random() < 0.02:
@@ -166,6 +201,7 @@ while running:
         if player.x < enemy.x + ENEMY_SIZE and player.x + PLAYER_SIZE > enemy.x:
             running = False
 
+    player.update()
     player.draw()
     pygame.display.flip()
     clock.tick(60)
